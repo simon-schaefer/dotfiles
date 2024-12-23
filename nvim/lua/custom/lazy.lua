@@ -13,6 +13,12 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup("custom.plugins")
 
+-- colorscheme
+vim.cmd.colorscheme("catppuccin")
+
+-- lua-line setup
+require("lualine").setup()
+
 -- fzf setup
 require("telescope").setup()
 require("telescope").load_extension("fzf")
