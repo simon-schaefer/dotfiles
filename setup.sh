@@ -25,11 +25,3 @@ fi
 # NeoVim config.
 ln -s "$PWD/nvim" "$HOME/.config/nvim" 
 
-# Copy zshrc file to the home directory.
-echo "[ZSH Setup]"
-if [ -e "$HOME/.zshrc" ]; then
-    echo "... .zshrc already exists in the home directory."
-else
-    ln -s "$PWD/.zshrc" "$HOME/.zshrc"
-    echo "... .zshrc symlink created successfully."
-fi
