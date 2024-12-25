@@ -16,8 +16,9 @@ require("lazy").setup("custom.plugins")
 -- colorscheme
 vim.cmd.colorscheme("catppuccin")
 
--- lua-line setup
+-- lualine & bufferline setup
 require("lualine").setup()
+require("bufferline").setup()
 
 -- fzf setup
 require("telescope").setup()

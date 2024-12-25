@@ -23,5 +23,8 @@ wk.add({
 		{ "<leader>q", "<cmd>q<cr>", desc = "Quit" },
 		{ "<leader>w", "<cmd>w<cr>", desc = "Write" },
 	},
+
+	{ "<Tab>", ":bnext<cr>", desc = "Next Tab", mode = "n" },
+	{ "<S-Tab>", ":bprevious<cr>", desc = "Previous Tab", mode = "n" },
 	{ "<leader>?", nvcheatsheet.toggle, desc = "Cheatsheet" },
 })
