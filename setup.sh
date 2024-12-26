@@ -5,7 +5,8 @@ echo "[Installation]"
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo "... detected Linux. Using apt for installation."
     sudo apt install git
-    sudo apt install cmake
+    sudo apt install cmake  # required for nvim installations
+    sudo apt install npm  # required for nvim installations
     sudo apt install zsh
     sudo apt install bat  # cat with syntax
     sudo apt install zellij  # tmux in better
@@ -15,6 +16,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     echo "... detected macOS. Using brew for installation."
     brew install zsh --quiet
     brew install cmake --quiet
+    brew install npm --quiet
     brew install bat --quiet
     brew install zellij --quiet 
     brew install ripgrep --quiet
