@@ -4,22 +4,38 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # Install basic tools depending on operating system.
 echo "[Installation]"
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    echo "... detected Linux. Using apt for installation."
-    sudo apt install git
-    sudo apt install cmake  # required for nvim installations
-    sudo apt install npm  # required for nvim installations
-    sudo apt install zsh
-    sudo apt install bat  # cat with syntax
-    sudo apt install zellij  # tmux in better
-    sudo apt-get install fzf  # Quick file search
-    sudo apt-get install ripgrep  # Quick word search in files
+if command -v apt &> /dev/null; then    
+    echo "... detected apt. You are most likely running Linux Ubuntu."
+    sudo apt install git -y 
+    sudo apt install cmake -y  # required for nvim installations
+    sudo apt install npm -y  # required for nvim installations
+    sudo apt install zsh  -y 
+    sudo apt install bat  -y  # cat with syntax
+    sudo apt install zellij  -y  # tmux in better
+    sudo apt-get install fzf  -y  # Quick file search
+    sudo apt-get install ripgrep -y  # Quick word search in files
 
     # Setup gnome terminal preferences.
     cat "$SCRIPT_DIR/terminal/linux.preferences" | dconf load /org/gnome/terminal/legacy/profiles:/
 
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "... detected macOS. Using brew for installation."
+elif command -v dnf &> /dev/null; then
+    echo "... detected dnf. You are most likely running Linux Fedora."
+    sudo dnf copr enable -y varlad/zellij
+
+    sudo yum install git -y
+    sudo yum install cmake -y 
+    sudo yum install npm -y  
+    sudo yum install zsh -y
+    sudo yum install bat -y 
+    sudo dnf install zellij -y 
+    sudo yum install fzf -y 
+    sudo yum install ripgrep -y 
+
+    # Setup gnome terminal preferences.
+    cat "$SCRIPT_DIR/terminal/linux.preferences" | dconf load /org/gnome/terminal/legacy/profiles:/
+
+elif command -v brew &> /dev/null; then
+    echo "... detected brew. You are most likely running MacOS."
     brew install zsh --quiet
     brew install cmake --quiet
     brew install npm --quiet
@@ -29,7 +45,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     brew install ripgrep --quiet
 
 else
-    echo "Unsupported operating system. Aborting."
+    echo "Unsupported package management system. Aborting"
     exit 1
 fi
 
@@ -48,7 +64,7 @@ ln -sf "$SCRIPT_DIR/zshrc_basic_config.sh" "$HOME/.config/zshrc_basic_config.sh"
 
 # Miniconda setup.
 echo "[Miniconda setup]"
-CONDA_DIR="$HOME/.miniconda3"
+CONDA_DIR="$HOME/.miniconda"
 if [ ! -f "$CONDA_DIR/bin/activate" ]; then
     mkdir -p "$CONDA_DIR"
     wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O "$CONDA_DIR/miniconda.sh"
