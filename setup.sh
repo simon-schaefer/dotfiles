@@ -8,6 +8,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     sudo apt install cmake
     sudo apt install zsh
     sudo apt install bat  # cat with syntax
+    sudo apt install zellij  # tmux in better
     sudo apt-get install ripgrep  # NVIM telescope dependency
 
 elif [[ "$OSTYPE" == "darwin"* ]]; then
@@ -15,6 +16,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     brew install zsh --quiet
     brew install cmake --quiet
     brew install bat --quiet
+    brew install zellij --quiet 
     brew install ripgrep --quiet
 
 else
@@ -24,4 +26,7 @@ fi
 
 # NeoVim config.
 ln -s "$PWD/nvim" "$HOME/.config/nvim" 
+
+# Zellij config.
+ln -s "$PWD/zellij" "$HOME/.config/zellij"
 
