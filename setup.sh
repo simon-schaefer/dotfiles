@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
 # Install basic tools depending on operating system.
 echo "[Installation]"
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
@@ -14,7 +16,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     sudo apt-get install ripgrep  # Quick word search in files
 
     # Setup gnome terminal preferences.
-    cat "$PWD/terminal/linux.preferences" | dconf load /org/gnome/terminal/legacy/profiles:/
+    cat "$SCRIPT_DIR/terminal/linux.preferences" | dconf load /org/gnome/terminal/legacy/profiles:/
 
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     echo "... detected macOS. Using brew for installation."
@@ -32,16 +34,33 @@ else
 fi
 
 # ZSH setup.
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-ln -s "$PWD/zshrc_basic_config.sh" "$HOME/.config/zshrc_basic_config.sh"
+echo "[ZSH setup]"
+if [ ! -d "$HOME/.oh-my-zsh/" ]; then
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-rm "$HOME/.zshrc"
-echo "# Setup zsh basic config" >> "$HOME/.zshrc"
-echo "source $HOME/.config/zshrc_basic_config.sh" >> "$HOME/.zshrc"
+    rm "$HOME/.zshrc"
+    echo "# Setup zsh basic config" >> "$HOME/.zshrc"
+    echo "source $HOME/.config/zshrc_basic_config.sh" >> "$HOME/.zshrc"
+else
+    echo "... already setup. Skipping."
+fi
+ln -sf "$SCRIPT_DIR/zshrc_basic_config.sh" "$HOME/.config/zshrc_basic_config.sh"
 
-# NeoVim config.
-ln -s "$PWD/nvim" "$HOME/.config/nvim" 
+# Miniconda setup.
+echo "[Miniconda setup]"
+CONDA_DIR="$HOME/.miniconda3"
+if [ ! -f "$CONDA_DIR/bin/activate" ]; then
+    mkdir -p "$CONDA_DIR"
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O "$CONDA_DIR/miniconda.sh"
+    sh "$CONDA_DIR/miniconda.sh" -b -u -p "$CONDA_DIR"
+    rm "$CONDA_DIR/miniconda.sh"
+else
+    echo "... already setup. Skipping."
+fi
 
-# Zellij config.
-ln -s "$PWD/zellij" "$HOME/.config/zellij"
+# Linking several more configs.
+echo "[Linking some more configs]"
+ln -sf "$SCRIPT_DIR/nvim" "$HOME/.config/nvim" 
+ln -sf "$SCRIPT_DIR/zellij" "$HOME/.config/zellij"
 
+echo "[All setup 🎢]"
