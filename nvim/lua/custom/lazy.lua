@@ -16,6 +16,13 @@ require("lazy").setup("custom.plugins")
 -- colorscheme
 vim.cmd.colorscheme("catppuccin")
 
+-- local config setup
+require("config-local").setup({
+	silent = false,
+	commands_create = true,
+	autocommands_create = true,
+})
+
 -- lualine & bufferline setup
 require("lualine").setup()
 require("bufferline").setup()
