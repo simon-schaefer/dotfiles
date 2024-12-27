@@ -19,3 +19,6 @@ launch-conda() {
     unset __conda_setup
 }
 
+# FZF setup.
+source <(fzf --zsh)
+
