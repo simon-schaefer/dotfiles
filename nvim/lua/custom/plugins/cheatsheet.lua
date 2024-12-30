@@ -47,6 +47,12 @@ return {
 				{ "Search backward", "?" },
 				{ "Next search result", "n" },
 				{ "Previous search result", "N" },
+				{
+					"Search and Replace in multiple files",
+					":cfdo %s/search/replace/gc",
+				},
+				{ "-- Option: Substitute all occurences", "g" },
+				{ "-- Option: Confirm all substitutes", "c" },
 			},
 			["File Operations"] = {
 				{ "Save file", ":w" },
