@@ -28,6 +28,10 @@ return {
 				{ "Go to bottom of file", "G" },
 				{ "Go to specific line", ":{number}" },
 			},
+			["Jumping"] = {
+				{ "Go to definition of object under cursor", "<C-]>" },
+				{ "Go to previous cursor location", "<C-o>" },
+			},
 			["Editing"] = {
 				{ "Enter insert mode at cursor", "i" },
 				{ "Append (enter Insert mode after cursor)", "a" },
@@ -36,6 +40,7 @@ return {
 				{ "Delete line", "dd" },
 				{ "Undo last change", "u" },
 				{ "Redo last undone change", "<C-r>" },
+				{ "Toggle line comment of current or selected lines", "gcc" },
 			},
 			["Search"] = {
 				{ "Search forward", "/" },
