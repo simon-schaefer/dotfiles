@@ -26,6 +26,7 @@ wk.add({
 		{ "<leader>q", "<cmd>q<cr>", desc = "Quit" },
 		{ "<leader>w", "<cmd>w<cr>", desc = "Write" },
 	},
+	{ "<leader>bd", ":bd<cr>", desc = "Close tab/buffer", mode = "n" },
 
 	-- Neotree shortcut.
 	{ "<leader>t", ":Neotree toggle<cr>", desc = "Toggle file tree", mode = "n" },
