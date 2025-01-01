@@ -11,7 +11,7 @@ if command -v apt &> /dev/null; then
     sudo apt install npm -y  # required for nvim installations
     sudo apt install zsh  -y 
     sudo apt install bat  -y  # cat with syntax
-    sudo apt install zellij  -y  # tmux in better
+    sudo apt install tmux  -y  # tmux in better
     sudo apt-get install fzf  -y  # Quick file search
     sudo apt-get install ripgrep -y  # Quick word search in files
 
@@ -20,14 +20,12 @@ if command -v apt &> /dev/null; then
 
 elif command -v dnf &> /dev/null; then
     echo "... detected dnf. You are most likely running Linux Fedora."
-    sudo dnf copr enable -y varlad/zellij
-
     sudo yum install git -y
     sudo yum install cmake -y 
     sudo yum install npm -y  
     sudo yum install zsh -y
     sudo yum install bat -y 
-    sudo dnf install zellij -y 
+    sudo dnf install tmux -y 
     sudo yum install fzf -y 
     sudo yum install ripgrep -y 
 
@@ -40,7 +38,7 @@ elif command -v brew &> /dev/null; then
     brew install cmake --quiet
     brew install npm --quiet
     brew install bat --quiet
-    brew install zellij --quiet 
+    brew install tmux --quiet 
     brew install fzf --quiet
     brew install ripgrep --quiet
 
@@ -74,9 +72,15 @@ else
     echo "... already setup. Skipping."
 fi
 
+# tmux setup.
+echo "[tmux setup]"
+if [ ! -d "$HOME/.tmux/plugins/tpm/" ]; then
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+fi
+ln -sf "$SCRIPT_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
+
 # Linking several more configs.
 echo "[Linking some more configs]"
 ln -sf "$SCRIPT_DIR/nvim" "$HOME/.config/nvim" 
-ln -sf "$SCRIPT_DIR/zellij" "$HOME/.config/zellij"
 
 echo "[All setup 🎢]"
