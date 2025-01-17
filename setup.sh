@@ -14,6 +14,8 @@ if command -v apt &> /dev/null; then
     sudo apt install tmux  -y  # tmux in better
     sudo apt-get install fzf  -y  # Quick file search
     sudo apt-get install ripgrep -y  # Quick word search in files
+    sudo apt-get install ffmpeg -y  # Video processing
+    sudo apt-get install feh -y  # Better image visualization.
 
     # Setup gnome terminal preferences.
     cat "$SCRIPT_DIR/terminal/linux.preferences" | dconf load /org/gnome/terminal/legacy/profiles:/
@@ -28,6 +30,8 @@ elif command -v dnf &> /dev/null; then
     sudo dnf install tmux -y 
     sudo yum install fzf -y 
     sudo yum install ripgrep -y 
+    sudo dnf install ffmpeg -y
+    sudo yum install feh -y
 
     # Setup gnome terminal preferences.
     cat "$SCRIPT_DIR/terminal/linux.preferences" | dconf load /org/gnome/terminal/legacy/profiles:/
@@ -41,6 +45,8 @@ elif command -v brew &> /dev/null; then
     brew install tmux --quiet 
     brew install fzf --quiet
     brew install ripgrep --quiet
+    brew install ffmpeg --quiet
+    brew install feh --quiet
 
 else
     echo "Unsupported package management system. Aborting"
