@@ -41,6 +41,8 @@ return {
 				{ "Undo last change", "u" },
 				{ "Redo last undone change", "<C-r>" },
 				{ "Toggle line comment of current or selected lines", "gcc" },
+				{ "Paste yanked content into new line", "o-<C-r>-<quotes>" },
+				{ "Replace word with yanked content", "cw-<C-r>-0" },
 			},
 			["Search"] = {
 				{ "Search forward", "/" },
