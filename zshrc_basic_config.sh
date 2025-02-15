@@ -282,6 +282,79 @@ concat-videos() {
     echo "Concatenation complete. Output saved as $output_file"
 }
 
+concat-videos-in-time() {
+    # Check if directory and output file arguments are provided   
+    if [ -z "$1" ] || [ -z "$2" ]; then                               
+        echo "Error: Missing arguments. Usage: concat-videos-in-time <directory> <output_filename>"
+        return 1
+    fi                                                                                                                                                                       
+    local dir="$1"
+    local output_file="$2"      
+
+    # Check if the provided input is a directory
+    if [ ! -d "$dir" ]; then                                             
+        echo "Error: $dir is not a valid directory."        
+        return 1                          
+    fi                                                     
+    
+    # Create a temporary working directory                     
+    local tmp_dir=$(mktemp -d)                                                        
+    # Process each MP4 file            
+    local index=0            
+    local max_width=0
+    local max_height=0
+    for file in "$dir"/*.mp4; do                   
+        [ -e "$file" ] || continue  # Skip if no files found
+        local filename=$(basename "$file")
+        # Get video dimensions
+        local width=$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=s=x:p=0 "$file")
+        local height=$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=s=x:p=0 "$file")
+        # Update maximum dimensions
+        if (( width > max_width )); then
+            max_width=$width
+        fi
+        if (( height > max_height )); then
+            max_height=$height
+        fi
+        cp "$file" "$tmp_dir/video_$index.mp4"
+        ((index++))                                     
+    done                                               
+    
+    # Check if any files were processed      
+    if [ $index -eq 0 ]; then                  
+        echo "No MP4 files found in the directory."
+        return 1
+    fi
+
+    # Generate a list of inputs for ffmpeg                                           
+    ffmpeg_args=()          
+    for i in $(seq 0 $((index-1))); do
+        ffmpeg_args+=(-i "${tmp_dir}/video_${i}.mp4")
+    done
+
+    # Concatenate the videos in time using ffmpeg.
+    ffmpeg_args+=( 
+        -filter_complex "concat=n=${index}:v=1:a=1"
+        -c:v libx264
+        "${output_file}"
+    )
+    echo $ffmpeg_args
+
+    # Create a text file listing the inputs for the concat filter
+    local concat_file="${tmp_dir}/inputs.txt"
+    for i in $(seq 0 $((index-1))); do
+        echo "file video_${i}.mp4" >> "$concat_file"
+    done
+
+    # Run ffmpeg with the generated arguments and the concat filter
+    ffmpeg -f concat -safe 0 -i "$concat_file" -c:v libx264 "${output_file}"
+
+    # Clean up temporary files
+    rm -rf "$tmp_dir"
+    echo "Concatenation complete. Output saved as $output_file"
+}
+
+
 #################################################
 ## Bash utility functions.
 #################################################
