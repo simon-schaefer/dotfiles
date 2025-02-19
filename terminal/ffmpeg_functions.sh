@@ -18,12 +18,18 @@
 concat-videos-horizontally() {
     # Check if directory and output file arguments are provided
     if [ -z "$1" ] || [ -z "$2" ]; then
-        echo "Error: Missing arguments. Usage: concat-videos-horizontally <directory> <output_filename>"
+        echo "Error: Missing arguments. Usage: concat-videos-horizontally <directory> <output_filename> [filename_fontsize]"
         return 1
     fi
 
     local dir="$1"
     local output_file="$2"
+    
+    # Check if filename fontsize is provided
+    local filename_fontsize=18
+    if [ -n "$3" ]; then
+        filename_fontsize="$3"
+    fi
 
     # Check if the provided input is a directory
     if [ ! -d "$dir" ]; then
@@ -40,7 +46,11 @@ concat-videos-horizontally() {
         [ -e "$file" ] || continue  # Skip if no files found
         local filename=$(basename "$file")
         # Add text overlay with filename
-        ffmpeg -i "$file" -vf "drawtext=text='$filename':x=(w-text_w)/2:y=h-50:fontcolor=white:fontsize=18" -c:a copy "$tmp_dir/video_$index.mp4"
+        if [ ! "$filename_fontsize" -eq 0 ]; then
+            ffmpeg -i "$file" -vf "drawtext=text='$filename':x=(w-text_w)/2:y=h-50:fontcolor=white:fontsize=$filename_fontsize" -c:a copy "$tmp_dir/video_$index.mp4"
+        else 
+            cp "$file" "$tmp_dir/video_$index.mp4"
+        fi
         ((index++))
     done
 
@@ -73,24 +83,17 @@ concat-videos-horizontally() {
 concat-videos-vertically() {
     # Check if directory and output file arguments are provided
     if [ -z "$1" ] || [ -z "$2" ]; then
-        echo "Error: Missing arguments. Usage: concat-videos-vertically <directory> <output_filename> [filename_overlay]"
+        echo "Error: Missing arguments. Usage: concat-videos-vertically <directory> <output_filename> [filename_fontsize]"
         return 1
     fi
 
     local dir="$1"
     local output_file="$2"
 
-    # Check if filename_overlay flag is provided
-    local filename_overlay=0
+    # Check if filename fontsize is provided
+    local filename_fontsize=18
     if [ -n "$3" ]; then
-        if [ "$3" = "true" ]; then
-            filename_overlay=1
-        elif [ "$3" = "false" ]; then
-            filename_overlay=0
-        else
-            echo "Error: Invalid value for filename_overlay flag. Use 'true' or 'false'."
-            return 1
-        fi
+        filename_fontsize="$3"
     fi
 
     # Check if the provided input is a directory
@@ -107,9 +110,9 @@ concat-videos-vertically() {
     for file in "$dir"/*.mp4; do
         [ -e "$file" ] || continue  # Skip if no files found
         local filename=$(basename "$file")
-        if [ "$filename_overlay" -eq 1 ]; then
+        if [ ! "$filename_fontsize" -eq 0 ]; then
             # Add text overlay with filename
-            ffmpeg -i "$file" -vf "drawtext=text='$filename':x=(w-text_w)/2:y=50:fontcolor=white:fontsize=18" -c:a copy "$tmp_dir/video_$index.mp4"
+            ffmpeg -i "$file" -vf "drawtext=text='$filename':x=(w-text_w)/2:y=50:fontcolor=white:fontsize=$filename_fontsize" -c:a copy "$tmp_dir/video_$index.mp4"
         else 
             cp "$file" "$tmp_dir/video_$index.mp4"
         fi
@@ -161,7 +164,7 @@ concat-videos-vertically() {
 concat-videos() {
     # Check if directory, rows, and columns arguments are provided
     if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] || [ -z "$4" ] ; then
-        echo "Error: Missing arguments. Usage: concat-videos <directory> <rows> <columns> <output-file>"
+        echo "Error: Missing arguments. Usage: concat-videos <directory> <rows> <columns> <output-file> [filename_fontsize]"
         return 1
     fi
 
@@ -169,6 +172,11 @@ concat-videos() {
     local rows="$2"
     local cols="$3"
     local output_file="$4"
+    
+    local fontsize="18"
+    if [ -n "$5" ]; then
+        fontsize="$5"
+    fi
 
     # Check if the provided input is a directory
     if [ ! -d "$dir" ]; then
@@ -179,7 +187,6 @@ concat-videos() {
     # Create a temporary working directory
     local tmp_dir=$(mktemp -d)
 
-
     # Process each MP4 file
     local index=0
     for file in "$dir"/*.mp4; do
@@ -188,7 +195,6 @@ concat-videos() {
         cp "$file" "${tmp_dir}/${filename}"
         ((index++))
     done
-
 
     # Check if any files were processed
     if [ $index -eq 0 ]; then
@@ -199,7 +205,6 @@ concat-videos() {
 
     # Calculate total number of cells
     local total_cells=$((rows * cols))
-
 
     # Check if there are enough videos to fill all cells
     if [ $index -lt $total_cells ]; then
@@ -234,7 +239,7 @@ concat-videos() {
     local hstacked_videos=()
     for row_dir in "${row_dirs[@]}"; do
         local row_output_file="${row_dir}/hstacked.mp4"
-        concat-videos-horizontally "${row_dir}" "${row_output_file}"
+        concat-videos-horizontally "${row_dir}" "${row_output_file}" "${fontsize}"
         hstacked_videos+=("${row_output_file}")
     done
 
@@ -252,7 +257,7 @@ concat-videos() {
     done
 
     # Concatenate videos vertically. Do not draw the filename to the video, as it is temporary.
-    concat-videos-vertically "${vstack_dir}" "${output_file}" false
+    concat-videos-vertically "${vstack_dir}" "${output_file}" 0 
     #
     # # Clean up temporary files
     rm -rf "$tmp_dir"
