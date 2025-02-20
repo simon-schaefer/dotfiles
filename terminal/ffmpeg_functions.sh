@@ -186,6 +186,7 @@ concat-videos() {
 
     # Create a temporary working directory
     local tmp_dir=$(mktemp -d)
+    local tmp_dir_rows=$(mktemp -d)
 
     # Process each MP4 file
     local index=0
@@ -211,7 +212,7 @@ concat-videos() {
         echo "Warning: Not enough videos to fill all cells. Empty cells will be black."
         # Create blank videos for empty cells
         for ((i=index; i<total_cells; i++)); do
-            ffmpeg -f lavfi -i color=c=black:s=1280x720:r=30 -t 10 -c:v libx264 -crf 18 "${tmp_dir}/blank_${i}.mp4" &>/dev/null
+            ffmpeg -f lavfi -i color=c=black:s=256x256:r=30 -t 10 -c:v libx264 -crf 18 "${tmp_dir}/blank_${i}.mp4" &>/dev/null
         done
     fi
 
@@ -220,7 +221,7 @@ concat-videos() {
     local row_dirs=()
     local video_index=0
     for ((i=0; i<rows; i++)); do
-        local row_dir="${tmp_dir}/row_${i}"
+        local row_dir="${tmp_dir_rows}/row_${i}"
         mkdir "${row_dir}"
         for ((j=0; j<cols; j++)); do
             if [ $video_index -lt $index ]; then
@@ -234,7 +235,6 @@ concat-videos() {
         row_dirs+=("${row_dir}")
     done
 
-
     # Concatenate videos horizontally in each row
     local hstacked_videos=()
     for row_dir in "${row_dirs[@]}"; do
@@ -242,7 +242,6 @@ concat-videos() {
         concat-videos-horizontally "${row_dir}" "${row_output_file}" "${fontsize}"
         hstacked_videos+=("${row_output_file}")
     done
-
 
     # Create a new directory for vertically stacked videos
     local vstack_dir="${tmp_dir}/vstack"
@@ -258,9 +257,10 @@ concat-videos() {
 
     # Concatenate videos vertically. Do not draw the filename to the video, as it is temporary.
     concat-videos-vertically "${vstack_dir}" "${output_file}" 0 
-    #
+
     # # Clean up temporary files
     rm -rf "$tmp_dir"
+    rm -rf "$tmp_dir_rows"
     echo "Concatenation complete. Output saved as $output_file"
 }
 
