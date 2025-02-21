@@ -63,7 +63,7 @@ concat-videos-horizontally() {
 
     # Generate a list of inputs for ffmpeg
     ffmpeg_args=()
-    for i in $(seq 0 $((index-1))); do
+    for ((i = 0; i < index; i++)); do
         ffmpeg_args+=(-i "${tmp_dir}/video_${i}.mp4")
     done
 
@@ -129,7 +129,7 @@ concat-videos-vertically() {
 
     # Generate a list of inputs for ffmpeg
     ffmpeg_args=()
-    for i in $(seq 0 $((index-1))); do
+    for ((i = 0; i < index; i++)); do
         ffmpeg_args+=(-i "${tmp_dir}/video_${i}.mp4")
     done
 
@@ -312,7 +312,7 @@ concat-videos-in-time() {
 
     # Generate a list of inputs for ffmpeg                                           
     ffmpeg_args=()          
-    for i in $(seq 0 $((index-1))); do
+    for ((i = 0; i < index; i++)); do
         ffmpeg_args+=(-i "${tmp_dir}/video_${i}.mp4")
     done
 
@@ -326,7 +326,7 @@ concat-videos-in-time() {
 
     # Create a text file listing the inputs for the concat filter
     local concat_file="${tmp_dir}/inputs.txt"
-    for i in $(seq 0 $((index-1))); do
+    for ((i = 0; i < index; i++)); do
         echo "file video_${i}.mp4" >> "$concat_file"
     done
 
