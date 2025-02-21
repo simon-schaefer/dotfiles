@@ -45,9 +45,10 @@ concat-videos-horizontally() {
     for file in "$dir"/*.mp4; do
         [ -e "$file" ] || continue  # Skip if no files found
         local filename=$(basename "$file")
+        local caption="${filename%.*}"
         # Add text overlay with filename
         if [ ! "$filename_fontsize" -eq 0 ]; then
-            ffmpeg -i "$file" -vf "drawtext=text='$filename':x=(w-text_w)/2:y=h-50:fontcolor=white:fontsize=$filename_fontsize" -c:a copy "$tmp_dir/video_$index.mp4"
+            ffmpeg -i "$file" -vf "drawtext=text='$caption':x=(w-text_w)/2:y=h-50:fontcolor=white:fontsize=$filename_fontsize" -c:a copy "$tmp_dir/video_$index.mp4"
         else 
             cp "$file" "$tmp_dir/video_$index.mp4"
         fi
@@ -110,9 +111,10 @@ concat-videos-vertically() {
     for file in "$dir"/*.mp4; do
         [ -e "$file" ] || continue  # Skip if no files found
         local filename=$(basename "$file")
+        local caption="${filename%.*}"
         if [ ! "$filename_fontsize" -eq 0 ]; then
             # Add text overlay with filename
-            ffmpeg -i "$file" -vf "drawtext=text='$filename':x=(w-text_w)/2:y=50:fontcolor=white:fontsize=$filename_fontsize" -c:a copy "$tmp_dir/video_$index.mp4"
+            ffmpeg -i "$file" -vf "drawtext=text='$caption':x=(w-text_w)/2:y=50:fontcolor=white:fontsize=$filename_fontsize" -c:a copy "$tmp_dir/video_$index.mp4"
         else 
             cp "$file" "$tmp_dir/video_$index.mp4"
         fi
@@ -334,5 +336,45 @@ concat-videos-in-time() {
     # Clean up temporary files
     rm -rf "$tmp_dir"
     echo "Concatenation complete. Output saved as $output_file"
+}
+
+# Extracts frames from a video and saves as images.
+# Scales the frames to a specified resolution before saving.
+#
+# Arguments:
+# $1 - The path to the input video file.
+# $2 - The path to the directory where the output images will be saved.
+# $3 - Scaling factor for image dimensions.
+# 
+# Returns:
+# - 0 on success.
+# - 1 on error (invalid arguments, input file not found, or directory issues).#
+extract-frames() {
+    # Check if directory and output file arguments are provided   
+    if [ -z "$1" ] || [ -z "$2" ]; then                               
+        echo "Error: Missing arguments. Usage: extract-frames <video-file> <out-directory> [scaling-factor]"
+        return 1
+    fi                                                                                                                                                                       
+    local input_video="$1"
+    local output_dir="$2"
+    local scale_factor=1
+    if [ -n "$3" ]; then
+        scale_factor="$3"
+    fi
+
+    # Check if the input video exists.
+    if [ ! -f "$input_video" ]; then
+        echo "Error: Input video file not found."
+        return 1
+    fi
+
+    # Create the output directory if it doesn't exist.
+    mkdir -p "$output_dir"
+
+    # Use FFmpeg to extract frames, optionally scale, and save as images.
+    ffmpeg -i "$input_video" \
+       -vf "scale=iw*${scale_factor}:ih*${scale_factor}" \
+       -q:v 2 \
+       "${output_dir}/frame_%06d.jpg"
 }
 
