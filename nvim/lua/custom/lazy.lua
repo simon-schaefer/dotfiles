@@ -15,6 +15,11 @@ require("lazy").setup("custom.plugins")
 
 -- colorscheme
 vim.cmd.colorscheme("catppuccin")
+require("darklight").setup({
+	mode = "colorscheme",
+	light_mode_colorscheme = "catppuccin-frappe",
+	dark_mode_colorscheme = "catppuccin",
+})
 
 -- local config setup
 require("config-local").setup({
