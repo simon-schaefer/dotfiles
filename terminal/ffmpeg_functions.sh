@@ -378,3 +378,35 @@ extract-frames() {
        "${output_dir}/frame_%06d.jpg"
 }
 
+# Concatenate all given inputs to a video file. 
+#
+# Arguments:
+# $1 - The input files.
+# $2 - The output file.
+# $3 - Frames per seconds as integer.
+#
+# Returns:
+# - 0 on success.
+# - 1 on error (invalid arguments, input file not found, or directory issues).#
+#
+# Example:
+#   concatenate-frames dir/%04d.png output.mp4 10
+concatenate-frames() {
+    # Check if directory and output file arguments are provided
+    if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
+        echo "Error: Missing arguments. Usage: concatenate-frames <inputs> <output-file> <fps>"
+        return 1
+    fi
+
+    local inputs="$1"
+    local output_file="$2"
+    local fps="$3"
+
+    # Use FFmpeg to concatenate frames and save as a video.
+    ffmpeg -framerate $fps \
+           -i "${inputs}" \
+           -c:v libx264 \
+           -crf 18 \
+           -pix_fmt yuv420p \
+           "$output_file"
+}
