@@ -351,15 +351,16 @@ concat-videos-in-time() {
 # - 1 on error (invalid arguments, input file not found, or directory issues).#
 extract-frames() {
     # Check if directory and output file arguments are provided   
-    if [ -z "$1" ] || [ -z "$2" ]; then                               
-        echo "Error: Missing arguments. Usage: extract-frames <video-file> <out-directory> [scaling-factor]"
+    if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] ; then                               
+        echo "Error: Missing arguments. Usage: extract-frames <video-file> <out-directory> <fps> [scaling-factor]"
         return 1
     fi                                                                                                                                                                       
     local input_video="$1"
     local output_dir="$2"
+    local fps="$3"
     local scale_factor=1
-    if [ -n "$3" ]; then
-        scale_factor="$3"
+    if [ -n "$4" ]; then
+        scale_factor="$4"
     fi
 
     # Check if the input video exists.
@@ -373,7 +374,7 @@ extract-frames() {
 
     # Use FFmpeg to extract frames, optionally scale, and save as images.
     ffmpeg -i "$input_video" \
-       -vf "scale=iw*${scale_factor}:ih*${scale_factor}" \
+       -vf "scale=iw*${scale_factor}:ih*${scale_factor},fps=${fps}" \
        -q:v 2 \
        "${output_dir}/frame_%06d.jpg"
 }
