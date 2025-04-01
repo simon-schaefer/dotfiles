@@ -379,6 +379,38 @@ extract-frames() {
        "${output_dir}/frame_%06d.jpg"
 }
 
+
+# Enlarges images in a directory by a specified percentage and stores them in a new directory.
+#
+# Arguments:
+# $1 - The input files.
+# $2 - The percentage to enlarge the images.
+#
+# Returns:
+# - 0 on success.
+# - 1 on error (invalid arguments, input file not found, or directory issues).#
+#
+# Example:
+#   enlarge-images dir/*.png 200
+enlarge-images() {
+    local files=("${@:1:${#@}-1}")
+    local percent="${@: -1}"
+
+    # Enlarge images
+    for file in "${files[@]}"; do
+        if [ -f "$file" ]; then
+            local filename=$(basename -- "$file")
+            local dirname=$(dirname -- "$file")
+            local output_directory="${dirname}_enlarged"
+            mkdir -p "$output_directory"
+
+            # Use ImageMagick to enlarge the image by the specified percentage.
+            magick "$file" -resize "${percent}%" "${output_directory}/${filename}"
+        fi
+    done
+}
+
+
 # Concatenate all given inputs to a video file. 
 #
 # Arguments:
