@@ -61,3 +61,32 @@ merge-directories() {
         done
     done
 }
+
+## Flatten directory by replacing all "/" with "_" and copy to output directory.
+# Arguments:
+#   $1 - Input directory.
+#   $2 - Output directory.
+#
+# Returns:
+#   - 0 on success.
+#   - 1 on error (invalid arguments, no files found, or directory issues).
+#
+# Example:
+#   flatten-directory dir/ output-dir/
+flatten-directory() {
+    local input_dir="$1"
+    local output_dir="$2"
+
+    if [ ! -d "$input_dir" ]; then
+        echo "Error: Input directory '$input_dir' does not exist."
+        return 1
+    fi
+
+    mkdir -p "$output_dir"
+
+    while IFS= read -r -d '' file; do
+        relative_path="${file#$input_dir/}"
+        new_filename="${relative_path//\//_}"
+        cp -p "$file" "$output_dir/$new_filename"
+    done < <(find "$input_dir" -type f -print0)
+}
