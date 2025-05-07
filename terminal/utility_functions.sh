@@ -90,3 +90,36 @@ flatten-directory() {
         cp -p "$file" "$output_dir/$new_filename"
     done < <(find "$input_dir" -type f -print0)
 }
+
+rename-sequential() {
+  local dir="${1:-.}"         # Directory (default: current)
+  local ext="${2:-png}"       # Extension (default: png)
+  
+  # Check if directory exists
+  if [ ! -d "$dir" ]; then
+    echo "Error: Directory '$dir' does not exist"
+    return 1
+  fi
+  
+  # Create array of files (excluding hidden files)
+  local files=()
+  while IFS= read -r file; do
+    files+=("$file")
+  done < <(find "$dir" -maxdepth 1 -type f -not -path "*/\.*" | sort)
+  
+  local total=${#files[@]}
+  if [ "$total" -eq 0 ]; then
+    echo "No files found in directory '$dir'"
+    return 0
+  fi
+
+  echo "Renaming $total files..."
+  for i in $(seq 0 $total); do
+    local new_name=$(printf "%04d.%s" $i "$ext")
+    local old_name=${files[$i]}
+    if [ "$old_name" = "$dir$new_name" ]; then 
+      continue 
+    fi
+    mv "$old_name" "$dir/$new_name"
+  done
+}
