@@ -113,13 +113,14 @@ rename-sequential() {
     return 0
   fi
 
-  echo "Renaming $total files..."
-  for i in $(seq 0 $total); do
+  for i in $(seq 1 $total); do
     local new_name=$(printf "%04d.%s" $i "$ext")
     local old_name=${files[$i]}
-    if [ "$old_name" = "$dir$new_name" ]; then 
+    if [ "$old_name" = "$dir/$new_name" ]; then 
       continue 
     fi
+    echo "$old_name" 
+    echo "$dir/$new_name"
     mv "$old_name" "$dir/$new_name"
   done
 }
