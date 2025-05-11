@@ -35,3 +35,10 @@ require("bufferline").setup()
 -- fzf setup
 require("telescope").setup()
 require("telescope").load_extension("fzf")
+
+-- copilot keymap
+vim.keymap.set("i", "<C-L>", 'copilot#Accept("\\<CR>")', {
+	expr = true,
+	replace_keycodes = false,
+})
+vim.g.copilot_no_tab_map = true
