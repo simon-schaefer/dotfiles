@@ -34,6 +34,8 @@ wk.add({
 	-- Tab navigation shortcut.
 	{ "<Tab>", ":bnext<cr>", desc = "Next Tab", mode = "n" },
 	{ "<S-Tab>", ":bprevious<cr>", desc = "Previous Tab", mode = "n" },
+	-- { "<[-b>", ":bnext<cr>", desc = "Next Tab", mode = "n" },
+	-- { "<]-b>", ":bprevious<cr>", desc = "Previous Tab", mode = "n" },
 
 	-- Cheatsheet shortcut.
 	{ "<leader>?", nvcheatsheet.toggle, desc = "Cheatsheet" },
