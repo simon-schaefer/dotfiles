@@ -87,6 +87,9 @@ ln -sf "$SCRIPT_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
 
 # Linking several more configs.
 echo "[Linking some more configs]"
+if [ ! -d "$HOME/.config/" ]; then
+    mkdir -p "$HOME/.config"
+fi
 ln -sf "$SCRIPT_DIR/nvim" "$HOME/.config/nvim" 
 
 echo "[All setup 🎢]"
