@@ -18,16 +18,6 @@ fi
 ln -sf "$SCRIPT_DIR/nvim" "${INSTALL_DIR}.config/nvim"
 sudo apt-get update
 
-# CLANG
-sudo apt-get install -y clang
-# sudo ln -s -f .clangd ~/.clangd
-
-# NPM
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-export NVM_DIR="$INSTALL_DIR.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-nvm install 16.15.1
-
 # NEOVIM
 wget https://github.com/neovim/neovim/releases/download/v0.10.3/nvim-linux64.tar.gz
 tar xzvf nvim-linux64.tar.gz

@@ -9,6 +9,7 @@ if command -v apt &> /dev/null; then
     sudo apt install git -y 
     sudo apt install cmake -y  # required for nvim installations
     sudo apt install npm -y  # required for nvim installations
+    sudo apt install clang -y  # required for nvim installations
     sudo apt install zsh  -y 
     sudo apt install bat  -y  # cat with syntax
     sudo apt install tmux  -y  # tmux in better
@@ -41,6 +42,7 @@ elif command -v brew &> /dev/null; then
     brew install zsh --quiet
     brew install cmake --quiet
     brew install npm --quiet
+    brew install clang --quiet
     brew install bat --quiet
     brew install tmux --quiet 
     brew install fzf --quiet
