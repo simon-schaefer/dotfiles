@@ -12,17 +12,13 @@ return {
             ensure_installed = {
                 "html",
                 "jsonls",
-                "pyright",
             },
         })
 
         require("mason-tool-installer").setup({
             ensure_installed = {
                 "prettier",
-                "black", -- python formatter
-                "isort", -- python formatter
                 "stylua", -- lua formatter
-                "pylint",
             },
         })
     end,
