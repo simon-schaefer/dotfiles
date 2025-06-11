@@ -28,6 +28,9 @@ launch-conda() {
 source $SCRIPT_DIR/terminal/ffmpeg_functions.sh
 source $SCRIPT_DIR/terminal/utility_functions.sh 
 
-## FZF setup.
-source <(fzf --zsh)
-
+## Aliases and OS specific setup.
+if [ "$(awk -F= '/^NAME=/{gsub(/"/, "", $2); print $2}' /etc/os-release)" = "Ubuntu" ]; then 
+    alias bat='batcat'; 
+else
+    source <(fzf --zsh)
+fi
