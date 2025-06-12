@@ -29,7 +29,7 @@ source $SCRIPT_DIR/terminal/ffmpeg_functions.sh
 source $SCRIPT_DIR/terminal/utility_functions.sh 
 
 ## Aliases and OS specific setup.
-if [ "$(awk -F= '/^NAME=/{gsub(/"/, "", $2); print $2}' /etc/os-release)" = "Ubuntu" ]; then 
+if [ "$(grep '^NAME=' /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d '"')" = "Ubuntu" ]; then
     alias bat='batcat'; 
 else
     source <(fzf --zsh)
