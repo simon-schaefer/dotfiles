@@ -42,3 +42,14 @@ vim.keymap.set("i", "<C-L>", 'copilot#Accept("\\<CR>")', {
 	replace_keycodes = false,
 })
 vim.g.copilot_no_tab_map = true
+
+-- lspconfig setup
+local lspconfig = require("lspconfig")
+
+-- Display diagnostics in a floating window on CursorHold
+vim.o.updatetime = 500
+vim.api.nvim_create_autocmd("CursorHold", {
+	callback = function()
+		vim.diagnostic.open_float(nil, { focusable = false })
+	end,
+})
