@@ -23,7 +23,7 @@ ln -sf "$SCRIPT_DIR/nvim" "${HOME}/.config/nvim"  # non-root user
 sudo apt-get update
 
 # Install some more dependencies
-sudo apt-get install -y curl git 
+sudo apt-get install -y curl git ripgrep
 curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 sudo apt install -y nodejs
 
