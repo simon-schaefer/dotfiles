@@ -15,10 +15,19 @@ cd "$INSTALL_DIR"
 if [ ! -d "$INSTALL_DIR/.config/" ]; then
     mkdir -p "$INSTALL_DIR/.config"
 fi
-ln -sf "$SCRIPT_DIR/nvim" "${INSTALL_DIR}.config/nvim"
+if [ ! -d "$HOME/.config/" ]; then
+    mkdir -p "$HOME/.config"
+fi
+ln -sf "$SCRIPT_DIR/nvim" "${INSTALL_DIR}.config/nvim"  # root user
+ln -sf "$SCRIPT_DIR/nvim" "${HOME}/.config/nvim"  # non-root user
 sudo apt-get update
 
+# Install some more dependencies
+sudo apt-get install -y curl git 
+curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+sudo apt install -y nodejs
+
 # NEOVIM
-wget https://github.com/neovim/neovim/releases/download/v0.10.3/nvim-linux64.tar.gz
-tar xzvf nvim-linux64.tar.gz
-sudo ln -s "${INSTALL_DIR}nvim-linux64/bin/nvim" /usr/local/bin/nvim
+wget https://github.com/neovim/neovim-releases/releases/download/v0.11.2/nvim-linux-x86_64.tar.gz
+tar xzvf nvim-linux-x86_64.tar.gz
+sudo ln -s "${INSTALL_DIR}nvim-linux-x86_64/bin/nvim" /usr/local/bin/nvim
