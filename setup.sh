@@ -18,6 +18,8 @@ if command -v apt &> /dev/null; then
     sudo apt-get install ffmpeg -y  # Video processing
     sudo apt-get install feh -y  # Better image visualization.
 
+    conda_install_file="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
+
     # Setup gnome terminal preferences.
     cat "$SCRIPT_DIR/terminal/linux.preferences" | dconf load /org/gnome/terminal/legacy/profiles:/
 
@@ -34,6 +36,8 @@ elif command -v dnf &> /dev/null; then
     sudo dnf install ffmpeg -y
     sudo yum install feh -y
 
+    conda_install_file="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
+
     # Setup gnome terminal preferences.
     cat "$SCRIPT_DIR/terminal/linux.preferences" | dconf load /org/gnome/terminal/legacy/profiles:/
 
@@ -49,6 +53,8 @@ elif command -v brew &> /dev/null; then
     brew install ripgrep --quiet
     brew install ffmpeg --quiet
     brew install feh --quiet
+
+    conda_install_file="https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh"
 
 else
     echo "Unsupported package management system. Aborting"
@@ -73,7 +79,7 @@ echo "[Miniconda setup]"
 CONDA_DIR="$HOME/.miniconda"
 if [ ! -f "$CONDA_DIR/bin/activate" ]; then
     mkdir -p "$CONDA_DIR"
-    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O "$CONDA_DIR/miniconda.sh"
+    wget $conda_install_file -O "$CONDA_DIR/miniconda.sh"
     sh "$CONDA_DIR/miniconda.sh" -b -u -p "$CONDA_DIR"
     rm "$CONDA_DIR/miniconda.sh"
 else
