@@ -1,3 +1,2 @@
-require("custom.settings")
-require("custom.lazy")
-require("custom.maps")
+require("config.settings")
+require("config.lazy")
